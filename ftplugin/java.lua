@@ -1,14 +1,22 @@
--- nvim_setting_root_dirを必要に応じて修正
--- kickstart.nvim => nvim
-
-local home = os.getenv 'HOME'
-local workspace_path = home .. '/.local/share/kickstart.nvim/jdtls-workspace/'
+local data_dir = vim.fn.stdpath 'data'
+local workspace_path = data_dir .. '/jdtls-workspace/'
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
 local workspace_dir = workspace_path .. project_name
+local mason_packages = data_dir .. '/mason/packages'
 
 local status, jdtls = pcall(require, 'jdtls')
 if not status then return end
+
 local extendedClientCapabilities = jdtls.extendedClientCapabilities
+
+local bundles = {}
+local debug_jar_pattern = mason_packages .. '/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar'
+local debug_jar = vim.fn.glob(debug_jar_pattern)
+if debug_jar ~= '' then
+  table.insert(bundles, debug_jar)
+else
+  print 'debug_jar can not find'
+end
 
 local config = {
   cmd = {
@@ -24,15 +32,15 @@ local config = {
     'java.base/java.util=ALL-UNNAMED',
     '--add-opens',
     'java.base/java.lang=ALL-UNNAMED',
-    '-javaagent:' .. home .. '/.local/share/kickstart.nvim/mason/packages/jdtls/lombok.jar',
+    '-javaagent:' .. mason_packages .. '/jdtls/lombok.jar',
     '-jar',
-    vim.fn.glob(home .. '/.local/share/kickstart.nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar'),
+    vim.fn.glob(mason_packages .. '/jdtls/plugins/org.eclipse.equinox.launcher_*.jar'),
     '-configuration',
-    home .. '/.local/share/kickstart.nvim/mason/packages/jdtls/config_win', -- 環境ごとに修正
+    mason_packages .. '/jdtls/config_mac', -- TODO: Change to the directory appropriate for your environment
     '-data',
     workspace_dir,
   },
-  root_dir = require('jdtls.setup').find_root { '.git', 'mvnw', 'gradlew', 'pom.xml', 'build.gradle' },
+  root_dir = require('jdtls.setup').find_root { '.git', 'mvnw', 'gradlew', 'pom.xml' }, -- 'build.gradle'
 
   settings = {
     java = {
@@ -53,15 +61,24 @@ local config = {
         },
       },
       format = {
-        enabled = false,
+        eabled = true,
+        --   settings = {
+        --     url = '/Users/nakamurashouta/.config/kickstart.nvim/formtter/google-java-format-1.34.1.jar',
+        --   },
       },
     },
   },
 
   init_options = {
-    bundles = {},
+    bundles = bundles,
   },
 }
+
+config['on_attach'] = function(client, bufnr)
+  jdtls.setup_dap { hotcodereplace = 'auto' }
+  require('jdtls.dap').setup_dap_main_class_configs()
+end
+
 require('jdtls').start_or_attach(config)
 
 vim.keymap.set('n', '<leader>co', "<Cmd>lua require'jdtls'.organize_imports()<CR>", { desc = 'Organize Imports' })
@@ -70,5 +87,3 @@ vim.keymap.set('v', '<leader>crv', "<Esc><Cmd>lua require('jdtls').extract_varia
 vim.keymap.set('n', '<leader>crc', "<Cmd>lua require('jdtls').extract_constant()<CR>", { desc = 'Extract Constant' })
 vim.keymap.set('v', '<leader>crc', "<Esc><Cmd>lua require('jdtls').extract_constant(true)<CR>", { desc = 'Extract Constant' })
 vim.keymap.set('v', '<leader>crm', "<Esc><Cmd>lua require('jdtls').extract_method(true)<CR>", { desc = 'Extract Method' })
-
-vim.keymap.set('n', '<F5>', ':split | term ./gradlew :app:run<CR>', { silent = true, desc = 'Gradle Run' })
