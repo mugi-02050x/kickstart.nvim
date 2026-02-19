@@ -472,8 +472,6 @@ require('lazy').setup({
     end,
   },
 
-  { 'mfussenegger/nvim-jdtls' },
-
   -- LSP Plugins
   {
     -- Main LSP Configuration
@@ -609,7 +607,7 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
-        jtdtls,
+        jdtls,
       }
 
       -- Ensure the servers and tools above are installed
