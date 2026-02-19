@@ -7,12 +7,12 @@ Welcome to the customized Neovim configuration! This project is a fork of the ki
 ### Install kickstart.nvim
 ```sh
 git clone git@github.com:mugi-02050x/kickstart.nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/kickstart.nvim
-export SHELL_PROFILE = ~/.bashrc
-## export SHELL_PROFILE = ~/.bash_profile
-## export SHELL_PROFILE = ~/.zshhrc
-## export SHELL_PROFILE = ~/.zsh_profile
+export SHELL_PROFILE="~/.bashrc"
+## export SHELL_PROFILE="~/.bash_profile"
+## export SHELL_PROFILE="~/.zshhrc"
+## export SHELL_PROFILE="~/.zsh_profile"
 echo "alias kvim='env NVIM_APPNAME=kickstart.nvim nvim'" >> SHELL_PROFILE
-source SHELL_PROFILE
+source $SHELL_PROFILE
 ```
 ### Post Installation
 Start kickstart.nvim
