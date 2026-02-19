@@ -472,9 +472,9 @@ require('lazy').setup({
     end,
   },
 
+  -- LSP Plugins
   { 'mfussenegger/nvim-jdtls' },
 
-  -- LSP Plugins
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
@@ -609,7 +609,6 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
-        jtdtls,
       }
 
       -- Ensure the servers and tools above are installed
@@ -623,6 +622,7 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'lua_ls', -- Lua Language server
         'stylua', -- Used to format Lua code
+        'jdtls',
         -- You can add other tools here that you want Mason to install
       })
 
