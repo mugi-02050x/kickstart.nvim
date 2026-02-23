@@ -5,7 +5,10 @@ local workspace_dir = workspace_path .. project_name
 local mason_packages = data_dir .. '/mason/packages'
 
 local status, jdtls = pcall(require, 'jdtls')
-if not status then return end
+if not status then
+  print 'jdtls can not find'
+  return
+end
 
 local extendedClientCapabilities = jdtls.extendedClientCapabilities
 
@@ -40,13 +43,29 @@ local config = {
     '-data',
     workspace_dir,
   },
-  root_dir = require('jdtls.setup').find_root { '.git', 'mvnw', 'gradlew', 'pom.xml' }, -- 'build.gradle'
+  root_dir = jdtls.setup.find_root { '.git', 'mvnw', 'gradlew', 'pom.xml' },
 
   settings = {
     java = {
+      home = '/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home', -- TODO: Replace this with the absolute path to your main java version (JDTLS requires JDK 21 or higher)
       signatureHelp = { enabled = true },
       extendedClientCapabilities = extendedClientCapabilities,
+      configuration = {
+        updateBuildConfiguration = 'automatic',
+        -- TODO: Update this by adding any runtimes that you need to support your Java projects and removing any that you don't have installed
+        runtimes = {
+          {
+            name = 'JavaSE-17',
+            path = '/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home',
+          },
+          {
+            name = 'JavaSE-21',
+            path = '/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home',
+          },
+        },
+      },
       maven = {
+        enabled = true,
         downloadSources = true,
       },
       referencesCodeLens = {
@@ -62,9 +81,6 @@ local config = {
       },
       format = {
         eabled = true,
-        --   settings = {
-        --     url = '/Users/nakamurashouta/.config/kickstart.nvim/formtter/google-java-format-1.34.1.jar',
-        --   },
       },
     },
   },
@@ -79,7 +95,7 @@ config['on_attach'] = function(client, bufnr)
   require('jdtls.dap').setup_dap_main_class_configs()
 end
 
-require('jdtls').start_or_attach(config)
+jdtls.start_or_attach(config)
 
 vim.keymap.set('n', '<leader>co', "<Cmd>lua require'jdtls'.organize_imports()<CR>", { desc = 'Organize Imports' })
 vim.keymap.set('n', '<leader>crv', "<Cmd>lua require('jdtls').extract_variable()<CR>", { desc = 'Extract Variable' })

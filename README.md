@@ -14,10 +14,17 @@ export SHELL_PROFILE="$HOME/.bashrc"
 echo "alias kvim='env NVIM_APPNAME=kickstart.nvim nvim'" >> SHELL_PROFILE
 source $SHELL_PROFILE
 ```
+
 ### Post Installation
 Start kickstart.nvim
 ```sh
 kvim
+```
+
+### Settings of Java Language Server 
+Modify the TODO in the following file to suit your environment.
+```
+kvim ${XDG_CONFIG_HOME:-$HOME/.config}"/kickstart.nvim/ftplugin/java.lua"
 ```
 
 ## References
