@@ -29,7 +29,7 @@ local config = {
     '-Declipse.product=org.eclipse.jdt.ls.core.product',
     '-Dlog.protocol=true',
     '-Dlog.level=ALL',
-    '-Xmx1g',
+    '-Xmx2g',
     '--add-modules=ALL-SYSTEM',
     '--add-opens',
     'java.base/java.util=ALL-UNNAMED',
@@ -61,6 +61,10 @@ local config = {
           {
             name = 'JavaSE-21',
             path = '/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home',
+          },
+          {
+            name = 'JavaSE-25',
+            path = '/opt/homebrew/opt/openjdk@25/libexec/openjdk.jdk/Contents/Home',
           },
         },
       },
