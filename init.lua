@@ -102,7 +102,7 @@ vim.g.have_nerd_font = false
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -166,6 +166,10 @@ vim.o.confirm = true
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+
+-- swap colon and semicolon
+vim.keymap.set('n', ';', ':')
+vim.keymap.set('n', ':', ';')
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -607,14 +611,14 @@ require('lazy').setup({
       local servers = {
         clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {},
         -- rust_analyzer = {},
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
+        ts_ls = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -629,6 +633,9 @@ require('lazy').setup({
         'lua_ls', -- Lua Language server
         'stylua', -- Used to format Lua code
         'jdtls', -- Java Langurage server
+        'ts_ls', -- TypeScript/JavaScript Language server
+        'prettierd', -- Formatter for JS/TS/JSX/TSX
+        'pyright', -- Python Language server
         'java-debug-adapter', -- Used Java Debug
         'java-test', -- Used Java Debug
         -- You can add other tools here that you want Mason to install
@@ -705,7 +712,10 @@ require('lazy').setup({
         -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        javascript = { 'prettierd', stop_after_first = true },
+        javascriptreact = { 'prettierd', stop_after_first = true },
+        typescript = { 'prettierd', stop_after_first = true },
+        typescriptreact = { 'prettierd', stop_after_first = true },
         java = { 'jdtls' },
       },
     },
@@ -817,6 +827,7 @@ require('lazy').setup({
         styles = {
           comments = { italic = false }, -- Disable italics in comments
         },
+        transparent = true,
       }
 
       -- Load the colorscheme here.
@@ -1067,6 +1078,32 @@ require('lazy').setup({
       }
     end,
   },
+
+  -- Live Server
+  {
+    'barrett-ruth/live-server.nvim',
+    build = 'npm install -g live-server', -- or "pnpm add -g live-server"
+    cmd = { 'LiveServerStart', 'LiveServerStop' },
+    init = function() vim.g.live_server = {} end,
+    keys = {
+      {
+        '<leader>ls',
+        function()
+          local dir = vim.fn.input('Root dir: ', vim.fn.expand '%:p:h', 'dir')
+          if dir ~= '' then require('live-server').start(dir) end
+        end,
+        desc = 'Start Live Server',
+      },
+      {
+        '<leader>lx',
+        '<cmd>LiveServerStop<cr>',
+        desc = 'Stop Live Server',
+      },
+    },
+  },
+
+  -- Kickstart Plugins
+  { import = 'kickstart.plugins.neo-tree' },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the

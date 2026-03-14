@@ -11,13 +11,30 @@ return {
   },
   lazy = false,
   keys = {
-    { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
+    { '//', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
   },
   opts = {
     filesystem = {
+      hide_dotfiles = false,
+      hide_gitignored = false,
       window = {
         mappings = {
           ['\\'] = 'close_window',
+        },
+      },
+      filtered_items = {
+        visible = false, -- デフォルトで隠されているかどうか
+        show_hidden_count = true,
+        hide_dotfiles = false, -- dotfileを隠すかどうか
+        hide_gitignored = false, -- gitignoreされているファイルを隠すかどうか
+        hide_by_name = {
+          'node_modules',
+          'thumbs.db',
+        },
+        never_show = {
+          '.git',
+          '.DS_Store',
+          '.history',
         },
       },
     },
